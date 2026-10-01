@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/priyanshoon/feeder/internal/config"
+
+	_ "github.com/lib/pq"
 )
 
 type state struct {
