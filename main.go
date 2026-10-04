@@ -42,6 +42,8 @@ func main() {
 
 	cmds.register("login", handlerLogin)
 	cmds.register("register", handlerRegister)
+	cmds.register("reset", handlerResetUser)
+	cmds.register("users", handlerGetUsers)
 
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "usage: prog <command> [args...]")
