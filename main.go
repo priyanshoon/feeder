@@ -1,16 +1,19 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/priyanshoon/feeder/internal/config"
+	"github.com/priyanshoon/feeder/internal/database"
 
 	_ "github.com/lib/pq"
 )
 
 type state struct {
+	db     *database.Queries
 	config *config.Config
 }
 
@@ -20,7 +23,16 @@ func main() {
 		log.Fatalf("error reading config: %v", err)
 	}
 
+	db, err := sql.Open("postgres", cfg.DBURL)
+	if err != nil {
+		fmt.Println("database error", err)
+		os.Exit(1)
+	}
+
+	dbQueries := database.New(db)
+
 	programState := &state{
+		db:     dbQueries,
 		config: &cfg,
 	}
 
@@ -29,6 +41,7 @@ func main() {
 	}
 
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
 
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "usage: prog <command> [args...]")
