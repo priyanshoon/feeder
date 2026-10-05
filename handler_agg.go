@@ -55,3 +55,15 @@ func handlerCreateFeed(s *state, cmd command) error {
 
 	return nil
 }
+
+func handlerGetFeeds(s *state, cmd command) error {
+	feeds, err := s.db.GetFeeds(context.Background())
+	if err != nil {
+		return fmt.Errorf("cannot fetch the feeds: %w\n", err)
+	}
+
+	for i := range feeds {
+		fmt.Printf("%s %s %s\n", feeds[i].Name, feeds[i].Url, feeds[i].Name_2)
+	}
+	return nil
+}
