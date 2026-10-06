@@ -47,6 +47,8 @@ func main() {
 	cmds.register("agg", handlerFeeds)
 	cmds.register("addfeed", handlerCreateFeed)
 	cmds.register("feeds", handlerGetFeeds)
+	cmds.register("follow", handlerFeedFollow)
+	cmds.register("following", handlerFeedFollowing)
 
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "usage: prog <command> [args...]")
