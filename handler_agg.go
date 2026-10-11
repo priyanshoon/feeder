@@ -22,20 +22,13 @@ func handlerFeeds(s *state, cmd command) error {
 	return nil
 }
 
-func handlerCreateFeed(s *state, cmd command) error {
+func handlerCreateFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 2 {
 		return fmt.Errorf("usage: %s <name> <url>\n", cmd.Name)
 	}
 
 	name := cmd.Args[0]
 	url := cmd.Args[1]
-
-	// get current user
-	currentUser := s.config.CurrentUserName
-	user, err := s.db.GetUser(context.Background(), currentUser)
-	if err != nil {
-		return fmt.Errorf("cannot get the current user: %w\n", err)
-	}
 
 	// connect current user with feed and create new feed
 	feed := database.CreateFeedParams{
@@ -83,7 +76,7 @@ func handlerGetFeeds(s *state, cmd command) error {
 	return nil
 }
 
-func handlerFeedFollow(s *state, cmd command) error {
+func handlerFeedFollow(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 1 {
 		return fmt.Errorf("usage: %s <name> <url>\n", cmd.Name)
 	}
@@ -94,13 +87,6 @@ func handlerFeedFollow(s *state, cmd command) error {
 	feed, err := s.db.GetFeedByUrl(context.Background(), url)
 	if err != nil {
 		return fmt.Errorf("cannot fetch the url %w\n", err)
-	}
-
-	// get current user
-	currentUser := s.config.CurrentUserName
-	user, err := s.db.GetUser(context.Background(), currentUser)
-	if err != nil {
-		return fmt.Errorf("error fetching current user : %w\n", err)
 	}
 
 	feedfollow := database.CreateFeedFollowParams{
@@ -121,17 +107,10 @@ func handlerFeedFollow(s *state, cmd command) error {
 	return nil
 }
 
-func handlerFeedFollowing(s *state, cmd command) error {
-	// get current user
-	currentUser := s.config.CurrentUserName
-	user, err := s.db.GetUser(context.Background(), currentUser)
-	if err != nil {
-		return fmt.Errorf("cannot fetch user in database: %w\n", err)
-	}
-
+func handlerFeedFollowing(s *state, cmd command, user database.User) error {
 	following, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
 	if err != nil {
-		return fmt.Errorf("cannot get the following feed of user %s, %w\n", currentUser, err)
+		return fmt.Errorf("cannot get the following feed of user %s, %w\n", user.Name, err)
 	}
 
 	for i := range following {
