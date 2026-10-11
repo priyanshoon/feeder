@@ -45,10 +45,11 @@ func main() {
 	cmds.register("reset", handlerResetUser)
 	cmds.register("users", handlerGetUsers)
 	cmds.register("agg", handlerFeeds)
-	cmds.register("addfeed", middlewareLoggedIn(handlerCreateFeed))
 	cmds.register("feeds", handlerGetFeeds)
+	cmds.register("addfeed", middlewareLoggedIn(handlerCreateFeed))
 	cmds.register("follow", middlewareLoggedIn(handlerFeedFollow))
 	cmds.register("following", middlewareLoggedIn(handlerFeedFollowing))
+	cmds.register("unfollow", middlewareLoggedIn(handlerUnfollow))
 
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "usage: prog <command> [args...]")
