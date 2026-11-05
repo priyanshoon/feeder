@@ -73,6 +73,7 @@ func handlerGetFeeds(s *state, cmd command) error {
 	for i := range feeds {
 		fmt.Printf("%s %s %s\n", feeds[i].Name, feeds[i].Url, feeds[i].Name_2)
 	}
+
 	return nil
 }
 
