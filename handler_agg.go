@@ -10,16 +10,31 @@ import (
 	"github.com/priyanshoon/feeder/internal/database"
 )
 
-func handlerFeeds(s *state, cmd command) error {
-	feedURL := "https://www.wagslane.dev/index.xml"
-	feed, err := fetchFeed(context.Background(), feedURL)
-	if err != nil {
-		return fmt.Errorf("cannot fetch feed: %w\n", err)
+func handlerAgg(s *state, cmd command) error {
+	if len(cmd.Args) != 1 {
+		return fmt.Errorf("usage: <time>\n")
 	}
 
-	fmt.Printf("Feed: %+v\n", feed)
+	parseTime, err := time.ParseDuration(cmd.Args[0])
+	if err != nil {
+		return fmt.Errorf("cannot parse the time duration %w\n", err)
+	}
 
-	return nil
+	fmt.Println("Collecting feeds every", parseTime)
+
+	ticker := time.NewTicker(parseTime)
+	for ; ; <-ticker.C {
+		scrapeFeeds(s)
+		// feedURL := "https://www.wagslane.dev/index.xml"
+		// feed, err := fetchFeed(context.Background(), feedURL)
+		// if err != nil {
+		// 	return fmt.Errorf("cannot fetch feed: %w\n", err)
+		// }
+		//
+		// fmt.Printf("Feed: %+v\n", feed)
+	}
+
+	// return nil
 }
 
 func handlerCreateFeed(s *state, cmd command, user database.User) error {
